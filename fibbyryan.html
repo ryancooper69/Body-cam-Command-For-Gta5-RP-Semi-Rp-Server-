@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FIB Bodycam Commands — Los Santos Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #0a0e1a;
+            color: #e0f7ff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== BACKGROUND EFFECTS ===== */
+
+        #vanta-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .bg-blur {
+            position: fixed;
+            inset: 0;
+            backdrop-filter: blur(10px);
+            z-index: -1;
+            pointer-events: none;
+            background: rgba(10, 14, 26, 0.4);
+        }
+
+        /* ===== BACK BUTTON ===== */
+
+        .back-button {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 1000;
+            background: rgba(159, 182, 229, 0.15);
+            border: 2px solid rgba(159, 182, 229, 0.4);
+            color: #9FB6E5;
+            padding: 15px 30px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.05em;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .back-button:hover {
+            background: rgba(159, 182, 229, 0.25);
+            border-color: #9FB6E5;
+            transform: translateX(-5px) scale(1.02);
+            box-shadow: 0 10px 35px rgba(159, 182, 229, 0.4);
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+        }
+
+        /* ===== HEADER ===== */
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .logo-wrapper {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .logo-wrapper img {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 25px rgba(159, 182, 229, 0.6));
+            animation: logo-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes logo-pulse {
+            0%,
+            100% {
+                filter: drop-shadow(0 0 25px rgba(159, 182, 229, 0.5));
+                transform: scale(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 35px rgba(159, 182, 229, 0.8));
+                transform: scale(1.05);
+            }
+        }
+
+        .logo-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -18px;
+            border: 2px solid rgba(159, 182, 229, 0.3);
+            border-radius: 50%;
+            animation: rotate-border 10s linear infinite;
+        }
+
+        @keyframes rotate-border {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            background: linear-gradient(180deg, #ffffff 0%, #9FB6E5 50%, #7d96cc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 30px rgba(159, 182, 229, 0.5));
+        }
+
+        .creator-tag {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            color: rgba(159, 182, 229, 0.9);
+            letter-spacing: 0.1em;
+            padding: 12px 24px;
+            border: 1px solid rgba(159, 182, 229, 0.3);
+            border-radius: 10px;
+            display: inline-block;
+            background: rgba(159, 182, 229, 0.1);
+            backdrop-filter: blur(8px);
+        }
+
+        /* ===== SECTIONS ===== */
+
+        .section {
+            margin-bottom: 60px;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(159, 182, 229, 0.4);
+            position: relative;
+        }
+
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 120px;
+            height: 2px;
+            background: linear-gradient(90deg, #9FB6E5, transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0%,
+            100% {
+                transform: translateX(0);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateX(250px);
+                opacity: 1;
+            }
+        }
+
+        .section-icon {
+            font-size: 2.2rem;
+            filter: drop-shadow(0 0 12px rgba(159, 182, 229, 0.6));
+        }
+
+        .section h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #9FB6E5;
+            margin: 0;
+            text-shadow: 0 0 25px rgba(159, 182, 229, 0.4);
+        }
+
+        /* ===== CARDS ===== */
+
+        .card {
+            background: linear-gradient(135deg, rgba(26, 31, 43, 0.7), rgba(20, 25, 40, 0.7));
+            backdrop-filter: blur(15px);
+            padding: 35px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(159, 182, 229, 0.25);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(159, 182, 229, 0.15), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            border-color: rgba(159, 182, 229, 0.5);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(159, 182, 229, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .card h3 {
+            color: #d1d9f0;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card h3::before {
+            content: '▸';
+            color: #9FB6E5;
+            font-size: 1.8rem;
+        }
+
+        /* ===== COMMAND LINES ===== */
+
+        .command-line {
+            background: linear-gradient(135deg, rgba(16, 20, 28, 0.85), rgba(10, 14, 20, 0.85));
+            border-left: 5px solid #9FB6E5;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .command-line::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: linear-gradient(180deg, #9FB6E5, #7d96cc);
+            box-shadow: 0 0 15px rgba(159, 182, 229, 0.6);
+        }
+
+        .command-line:hover {
+            background: linear-gradient(135deg, rgba(20, 25, 35, 0.95), rgba(15, 18, 28, 0.95));
+            border-left-color: #ffffff;
+            transform: translateX(8px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), -5px 0 25px rgba(159, 182, 229, 0.3);
+        }
+
+        .command-text {
+            flex: 1;
+            color: #f0f0f0;
+            line-height: 1.6;
+            user-select: all;
+        }
+
+        /* ===== COPY BUTTON ===== */
+
+        .copy-btn {
+            background: linear-gradient(135deg, #9FB6E5, #7d96cc);
+            border: none;
+            color: #0a0e1a;
+            padding: 14px 28px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            box-shadow: 0 6px 20px rgba(159, 182, 229, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .copy-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #ffffff, #9FB6E5);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(159, 182, 229, 0.6);
+            color: #0a0e1a;
+        }
+
+        .copy-btn:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 3px 12px rgba(159, 182, 229, 0.4);
+        }
+
+        .copy-btn:active::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .copy-btn.copied {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            box-shadow: 0 6px 20px rgba(74, 222, 128, 0.5);
+            color: #0a0e1a;
+        }
+
+        /* ===== INFO NOTES ===== */
+
+        .info-note {
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 12px;
+            padding: 18px 25px;
+            margin-top: 20px;
+            font-size: 1.05rem;
+            color: #fef08a;
+            line-height: 1.7;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            backdrop-filter: blur(5px);
+        }
+
+        .info-note::before {
+            content: '⚡';
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        /* ===== RESPONSIVE ===== */
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 100px 15px 50px;
+            }
+            header h1 {
+                font-size: 3rem;
+            }
+            .section h2 {
+                font-size: 1.7rem;
+            }
+            .command-line {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+            .copy-btn {
+                width: 100%;
+                padding: 16px;
+            }
+            .back-button {
+                top: 20px;
+                left: 20px;
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            .logo-wrapper img {
+                width: 110px;
+                height: 110px;
+            }
+        }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== SCROLLBAR ===== */
+
+        ::-webkit-scrollbar {
+            width: 14px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 14, 26, 0.7);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #9FB6E5, #7d96cc);
+            border-radius: 7px;
+            box-shadow: 0 0 15px rgba(159, 182, 229, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #ffffff, #9FB6E5);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Effects -->
+    <div id="vanta-bg"></div>
+    <div class="bg-blur"></div>
+
+    <!-- Back Button -->
+    <a href="index.html" class="back-button">
+    <span>←</span>
+    <span>BACK TO HUB</span>
+  </a>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- Header -->
+        <header>
+            <div class="logo-wrapper">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Seal_of_the_Federal_Bureau_of_Investigation.svg/200px-Seal_of_the_Federal_Bureau_of_Investigation.svg.png" alt="FIB Logo" onerror="this.style.display='none';">
+            </div>
+            <h1>FIB BODYCAM COMMANDS</h1>
+            <div class="creator-tag">
+                //- Made By Ryan Cooper🛡️-\\
+            </div>
+        </header>
+
+        <!-- Section: Attaching Bodycam -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📹</span>
+                <h2>Attaching Bodycam</h2>
+            </div>
+
+            <div class="card">
+                <h3>Attaching Bodycam (Uniform)</h3>
+                <div class="command-line">
+                    <span class="command-text">/me Takes out bodycam, attaches it to chest, checks its ballistic, water proof</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me makes sure it is recording and checks for the red light</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/do It is recording, is ballistic and water proof</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me connects PDA to the nearest cell tower</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>While Undercover</h3>
+                <div class="command-line">
+                    <span class="command-text">/me takes out bodycam and attaches it to belt, hides it, checks its ballistic and water proof</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me makes sure it is recording and checks for the red light</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/do It is recording, is ballistic and water proof</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me connects PDA to the nearest cell tower</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Refreshing Bodycam -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🔄</span>
+                <h2>Refreshing Bodycam</h2>
+            </div>
+
+            <div class="card">
+                <h3>Refreshing Bodycam</h3>
+                <div class="command-line">
+                    <span class="command-text">/me refreshing bodycam</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/do It is recording</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="info-note">
+                    First, turn on the bodycam (or screen recording software), then type the command while making sure you are clearly visible in the recording as you do it.
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Saving Bodycam -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">💾</span>
+                <h2>Saving Bodycam</h2>
+            </div>
+
+            <div class="card">
+                <h3>Saving Bodycam</h3>
+                <div class="command-line">
+                    <span class="command-text">/me saves bodycam, uploads it to the FIB Cloud and continues recording</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/do It is recording</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Taking Jumpsuit -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🧥</span>
+                <h2>Taking Jumpsuit from Bench</h2>
+            </div>
+
+            <div class="card">
+                <h3>Taking Jumpsuit from Bench</h3>
+                <div class="command-line">
+                    <span class="command-text">/me takes the XYZ size Jumpsuit from the Bench</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="info-note">
+                    Don't forget to put the actual size that 10-15 has requested instead of XYZ.
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me Places the Jumpsuit On the Bed</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Drone Commands -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🚁</span>
+                <h2>Drone Commands</h2>
+            </div>
+
+            <div class="card">
+                <h3>While in Work Uniform</h3>
+                <div class="command-line">
+                    <span class="command-text">/me launches the FIB Drone</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me Takes the FIB Drone from the Ground and put it back in backpack</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>While Undercover</h3>
+                <div class="command-line">
+                    <span class="command-text">/me takes the FIB drone from the trunk and puts it in the backpack</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me takes the FIB drone from the backpack and launches it</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me takes the FIB drone from the ground and puts it in the backpack</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Handing Footage -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">⚖️</span>
+                <h2>Handing Footage to the Lawyer</h2>
+            </div>
+
+            <div class="card">
+                <h3>Handing Footage to the Lawyer</h3>
+                <div class="command-line">
+                    <span class="command-text">/me saves bodycam contents onto an SD card and uploads contents to FIB servers</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me Takes SD card out of the bodycam and hands it to the lawyer</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Finishing Shift -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🏁</span>
+                <h2>Finishing Your Shift</h2>
+            </div>
+
+            <div class="card">
+                <h3>Finishing Your Shift</h3>
+                <div class="command-line">
+                    <span class="command-text">/me saves bodycam contents onto an SD card and uploads contents to FIB servers</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me puts the badge in the locker</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Searching Trunk -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🔍</span>
+                <h2>Searching a Trunk</h2>
+            </div>
+
+            <div class="card">
+                <h3>Searching a Trunk</h3>
+                <div class="command-line">
+                    <span class="command-text">/me carefully inspects the trunk and uses a crowbar to attempt opening it</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me applies pressure with the crowbar to force the trunk open</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Taking Evidence -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🕵️</span>
+                <h2>Taking Evidence</h2>
+            </div>
+
+            <div class="card">
+                <h3>When License Plate Not Visible</h3>
+                <div class="command-line">
+                    <span class="command-text">/me feels the edges of the vehicle for VIN and checks for ownership</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>When License Plate of Bike Not Visible</h3>
+                <div class="command-line">
+                    <span class="command-text">/me checks the VIN from the steering neck of the bike and checks for ownership</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="info-note">
+                    Then flex G muscle and see the vehicle information.
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Department Messages -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📡</span>
+                <h2>Department Messages</h2>
+            </div>
+
+            <!-- DOJ Related -->
+            <div class="card">
+                <h3>⚖️ DOJ Related</h3>
+                <div class="command-line">
+                    <span class="command-text">FIB to DOJ: How copy?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to DOJ: Good copy, send traffic!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to DOJ: Bad copy!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to DOJ: Bad copy, we're currently in a situation!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to DOJ: We have a 10-15 at DOC requesting a lawyer, Are there any available?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to DOJ: 10-4, much appreciated!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <!-- LSPD Related -->
+            <div class="card">
+                <h3>👮 LSPD Related</h3>
+                <div class="command-line">
+                    <span class="command-text">FIB to LSPD: How copy?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to LSPD: Good copy, send traffic!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to LSPD: Bad copy!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to LSPD: Bad copy, we're currently in a situation!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to LSPD: Can we have a quick meeting at your HQ?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to LSPD: Requesting permission to land at your helipad.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to LSPD: We are entering your jurisdiction in chase of a car hijacker, help would be appreciated.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to LSPD: We have one of your units in custody, could you 10-17 to DOC?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to LSPD: We're currently enroute!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to LSPD: 10-4, much appreciated!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to LSPD: Permission Granted!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <!-- SAHP Related -->
+            <div class="card">
+                <h3>🚓 SAHP Related</h3>
+                <div class="command-line">
+                    <span class="command-text">FIB to SAHP: Good copy, send traffic!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to SAHP: Bad copy!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to SAHP: Bad copy, we're currently in a situation!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to SAHP: Can we have a quick meeting at your hall?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to SAHP: Requesting permission to land at your helipad.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to SAHP: We have one of your agents in custody, could you 10-17 to DOC?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to SAHP: We're currently enroute!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to SAHP: Troopers enroute!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to SAHP: 10-4, much appreciated!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to SAHP: Permission Granted!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <!-- NG Related -->
+            <div class="card">
+                <h3>🪖 NG Related</h3>
+                <div class="command-line">
+                    <span class="command-text">FIB to NG: How copy?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to NG: Good copy, send traffic!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to NG: Bad copy!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to NG: Bad copy, we're currently in a situation!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to NG: Can we have a quick meeting at your main barracks?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to NG: Requesting permission to land at your main barracks.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to NG: We have one of your soldiers in custody, could you 10-17 to DOC?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to NG: We're currently enroute!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to NG: 10-4, much appreciated!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to NG: Permission Granted!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <!-- EMS Related -->
+            <div class="card">
+                <h3>🚑 EMS Related</h3>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: How copy?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: Good copy, send traffic!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: Bad copy!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: Bad copy, we're currently in a situation!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: Ghetto is off limits for the next 25 minutes, please inform all your units.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: Can we have a quick meeting at Pillbox Hospital?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: Requesting permission to land at your helipad.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: We have one of your employees in custody, could you 10-17 to DOC?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: We're currently enroute!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: Clean!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: 10-4, much appreciated!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to EMS: Permission Granted!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <!-- Government Related -->
+            <div class="card">
+                <h3>🏛️ Government Related</h3>
+                <div class="command-line">
+                    <span class="command-text">FIB to GOV: How copy?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to GOV: Good copy, send traffic!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to GOV: Bad copy!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to GOV: Bad copy, we're currently in a situation!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to GOV: Agents enroute!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to GOV: Can we have a quick meeting at capitol?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to GOV: Requesting permission to land on your lawn.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to GOV: We have one of your units in custody, could you 10-17 to DOC?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to GOV: 10-4, much appreciated!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <!-- Global Related -->
+            <div class="card">
+                <h3>🚨 Global Related</h3>
+                <div class="command-line">
+                    <span class="command-text">FIB to GLOBAL: What's the situation?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to ALL: Global is for Regroupping for latest Store Robbery.Please Dispatch Max units</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to ALL: Global is for heavy 10-10s, send all available units!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to ALL: Federals is getting robbed at global, send all available units!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to ALL: Global is for a hood watch, send all available units!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to ALL: Global is for a checkpoint, everyone is invited!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to ALL: Be on standby for a possible hostage situation!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">FIB to ALL: The Global is 10-99.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script>
+        // Initialize Vanta.net
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x9FB6E5,
+            points: 20.00,
+            maxDistance: 22.00,
+            spacing: 14.00,
+            backgroundColor: 0x0a0e1a
+        });
+
+        // Copy function with visual feedback
+        function copyLine(button) {
+            const commandText = button.previousElementSibling.innerText;
+
+            navigator.clipboard.writeText(commandText).then(() => {
+                // Store original text
+                const originalText = "COPY";
+
+                // Change button appearance
+                button.innerText = "✓ COPIED!";
+                button.classList.add('copied');
+
+                // Reset after delay
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.classList.remove('copied');
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                button.innerText = "ERROR";
+                setTimeout(() => {
+                    button.innerText = "COPY";
+                }, 1500);
+            });
+        }
+
+        // Scroll reveal animation
+        function reveal() {
+            const reveals = document.querySelectorAll('.section');
+
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        // Initial check
+        window.addEventListener('scroll', reveal);
+        reveal();
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K to focus search (if implemented)
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                // Search functionality can be added here
+            }
+
+            // ESC to go back
+            if (e.key === 'Escape') {
+                window.location.href = '/';
+            }
+        });
+    </script>
+
+</body>
+
+</html>

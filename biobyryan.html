@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Corrupt Cops Commands — Los Santos Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #f0f0f5;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== BACKGROUND EFFECTS ===== */
+
+        #vanta-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            width: 100%;
+            height: 100%;
+        }
+
+        .blur-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            backdrop-filter: blur(8px);
+            background: rgba(15, 12, 41, 0.3);
+            pointer-events: none;
+        }
+
+        /* ===== BACK BUTTON ===== */
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 0, 204, 0.1);
+            border: 2px solid rgba(255, 0, 204, 0.3);
+            color: #ff00cc;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button:hover {
+            background: rgba(255, 0, 204, 0.2);
+            border-color: #ff00cc;
+            transform: translateX(-5px);
+            box-shadow: 0 6px 25px rgba(255, 0, 204, 0.3);
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* ===== HEADER ===== */
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            background: linear-gradient(180deg, #ffffff 0%, #ff66dd 50%, #ff00cc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 25px rgba(255, 0, 204, 0.4));
+            animation: glitch 5s linear infinite;
+        }
+
+        @keyframes glitch {
+            0%,
+            90%,
+            100% {
+                transform: translate(0, 0);
+            }
+            91% {
+                transform: translate(-2px, 0);
+            }
+            92% {
+                transform: translate(2px, 0);
+            }
+            93% {
+                transform: translate(0, 0);
+            }
+        }
+
+        .creator-tag {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            color: rgba(255, 0, 204, 0.8);
+            letter-spacing: 0.1em;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 0, 204, 0.2);
+            border-radius: 8px;
+            display: inline-block;
+            background: rgba(255, 0, 204, 0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        /* ===== SECTIONS ===== */
+
+        .section {
+            margin-bottom: 50px;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .section:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 0, 204, 0.3);
+            position: relative;
+        }
+
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, #ff00cc, transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0%,
+            100% {
+                transform: translateX(0);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateX(200px);
+                opacity: 1;
+            }
+        }
+
+        .section-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 204, 0.5));
+        }
+
+        .section h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #ff66dd;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(255, 0, 204, 0.3);
+        }
+
+        /* ===== CARDS ===== */
+
+        .card {
+            background: linear-gradient(135deg, rgba(30, 30, 50, 0.8), rgba(26, 31, 43, 0.8));
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 204, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 255, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #00ffff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3::before {
+            content: '▸';
+            color: #ff00cc;
+            font-size: 1.5rem;
+        }
+
+        .card p {
+            color: #b3b3b3;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* ===== COMMAND LINES ===== */
+
+        .command-line {
+            background: linear-gradient(135deg, rgba(16, 20, 28, 0.9), rgba(10, 14, 20, 0.9));
+            border-left: 4px solid #6666ff;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .command-line::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #ff00cc, #6666ff);
+            box-shadow: 0 0 10px rgba(102, 102, 255, 0.5);
+        }
+
+        .command-line:hover {
+            background: linear-gradient(135deg, rgba(20, 25, 35, 0.95), rgba(15, 18, 28, 0.95));
+            border-left-color: #ff00cc;
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), -5px 0 20px rgba(255, 0, 204, 0.2);
+        }
+
+        .command-text {
+            flex: 1;
+            color: #f0f0f5;
+            line-height: 1.5;
+            user-select: all;
+        }
+
+        /* ===== COPY BUTTON ===== */
+
+        .copy-btn {
+            background: linear-gradient(135deg, #ff00cc, #3333ff);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 15px rgba(255, 0, 204, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .copy-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #ff33dd, #6666ff);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 0, 204, 0.5);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(255, 0, 204, 0.3);
+        }
+
+        .copy-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .copy-btn.copied {
+            background: linear-gradient(135deg, #00ffff, #3333ff);
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
+        }
+
+        /* ===== RESPONSIVE ===== */
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 15px;
+            }
+            header h1 {
+                font-size: 2.5rem;
+            }
+            .section h2 {
+                font-size: 1.5rem;
+            }
+            .command-line {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .copy-btn {
+                width: 100%;
+            }
+            .back-button {
+                top: 15px;
+                left: 15px;
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+            .logo-wrapper img {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 14, 26, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #ff00cc, #6666ff);
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(255, 0, 204, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #ff33dd, #3333ff);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Effects -->
+    <div id="vanta-bg"></div>
+    <div class="blur-overlay"></div>
+
+    <!-- Back Button -->
+    <a href="index.html" class="back-button">
+    <span>←</span>
+    <span>BACK TO HUB</span>
+  </a>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- Header -->
+        <header>
+            <h1>CORRUPT COPS COMMANDS</h1>
+            <div class="creator-tag">
+                //-Made By Ryan Cooper🛡️-\\
+            </div>
+        </header>
+
+        <!-- Section: Commands -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">⚠️</span>
+                <h2>Corrupt Operations</h2>
+            </div>
+
+            <div class="card">
+                <h3>Disable Bodycam</h3>
+                <p>Locate and disable the bodycam of the target in front of you.</p>
+                <div class="command-line">
+                    <span class="command-text">/try Finds the bodycam of the person in front and breaks it</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/do Make sure that Bodycam is Broken</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Truth Serum</h3>
+                <p>Administer a truth serum to the target in front of you.</p>
+                <div class="command-line">
+                    <span class="command-text">/try Injects the Truth Serum into the person in front</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Silence Target</h3>
+                <p>Silence the target by taping their mouth.</p>
+                <div class="command-line">
+                    <span class="command-text">/try Tapes the mouth of the person in front</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0xff00cc,
+            backgroundColor: 0x0f0c29,
+            points: 20.00,
+            maxDistance: 22.00,
+            spacing: 14.00
+        })
+
+        // Copy function with visual feedback
+        function copyLine(button) {
+            const commandText = button.previousElementSibling.innerText;
+
+            navigator.clipboard.writeText(commandText).then(() => {
+                const originalText = button.innerText;
+                button.innerText = "✓ COPIED!";
+                button.classList.add('copied');
+
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.classList.remove('copied');
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                button.innerText = "ERROR";
+                setTimeout(() => {
+                    button.innerText = "COPY";
+                }, 1500);
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                window.location.href = '/';
+            }
+        });
+    </script>
+
+</body>
+
+</html>

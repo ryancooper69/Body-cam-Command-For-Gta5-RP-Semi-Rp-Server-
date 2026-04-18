@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NNV70LGMNX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-NNV70LGMNX');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Los Santos Hub — Command Central</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #a43fff;
+            --primary-glow: rgba(164, 63, 255, 0.4);
+            --accent: #a43fff;
+            --bg-dark: #020205;
+            --card-bg: rgba(10, 15, 30, 0.7);
+            --transition-smooth: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            --page-transition-duration: 0.8s;
+            --page-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-dark);
+            color: #e0f7ff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ===== PAGE TRANSITION OVERLAY ===== */
+        .page-exit-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            opacity: 0;
+            z-index: 8000;
+            pointer-events: none;
+            transition: opacity var(--page-transition-duration) var(--page-transition-timing);
+        }
+
+        body.page-exit .page-exit-overlay {
+            opacity: 1;
+        }
+
+        /* ===== ADVANCED LOADING SCREEN ===== */
+        .loader-wrapper {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: visibility 1.2s;
+        }
+
+        .loader-wrapper.fade-out {
+            animation: expandOut 1.2s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        @keyframes expandOut {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                filter: blur(0px);
+            }
+            40% {
+                transform: scale(1.1);
+                opacity: 1;
+                filter: blur(5px);
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+                filter: blur(20px);
+            }
+        }
+
+        /* Sophisticated Visual Layers */
+        .loader-bg-fx {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(164, 63, 255, 0.15) 0%, transparent 70%);
+            animation: pulse-bg 4s ease-in-out infinite;
+        }
+
+        .loader-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        /* Advanced Multi-Layer Spinner */
+        .spinner-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 3rem;
+        }
+
+        .spinner-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid transparent;
+        }
+
+        .ring-1 {
+            border-top-color: var(--primary);
+            animation: spin 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+
+        .ring-2 {
+            inset: 10px;
+            border-right-color: rgba(164, 63, 255, 0.5);
+            animation: spin 3s linear infinite reverse;
+        }
+
+        .ring-3 {
+            inset: 20px;
+            border-bottom-color: var(--primary);
+            animation: spin 1.5s ease-in-out infinite;
+        }
+
+        .spinner-core {
+            position: absolute;
+            inset: 45px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 30px var(--primary);
+            animation: pulse-core 1.5s ease-in-out infinite;
+        }
+
+        /* Progress Indicators */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .progress-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, transparent, var(--primary), #fff);
+            box-shadow: 0 0 15px var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .loader-stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: rgba(164, 63, 255, 0.6);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .loader-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 0.3em;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-glow);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .loader-subtext {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.2em;
+        }
+
+        /* Accessibility: Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            .spinner-ring, .spinner-core, .loader-bg-fx {
+                animation: none !important;
+            }
+            .loader-wrapper {
+                transition: opacity 0.5s ease !important;
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse-core {
+            0%, 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 20px var(--primary); }
+            50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 40px var(--primary); }
+        }
+
+        @keyframes pulse-bg {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        /* ===== DYNAMIC BACKGROUND (VANTA) ===== */
+
+        #your-element-selector {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+        }
+
+        /* ===== LAYERED OVERLAYS ===== */
+
+        .dark-gradient {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient( ellipse at center, transparent 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.9) 100%);
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(164, 63, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(164, 63, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -2;
+            opacity: 0.4;
+        }
+
+        .tv-scanlines {
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient( to bottom, transparent 0%, rgba(255, 255, 255, 0.015) 1px, transparent 2px);
+            pointer-events: none;
+            z-index: -1;
+            animation: scan 10s linear infinite;
+        }
+
+        @keyframes scan {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100%);
+            }
+        }
+
+        /* ===== FLOATING PARTICLES ===== */
+
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        .particle.purple {
+            background: rgba(164, 63, 255, 0.6);
+            box-shadow: 0 0 10px rgba(164, 63, 255, 0.8);
+        }
+
+        .particle.white {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            width: 1.5px;
+            height: 1.5px;
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+
+        .main-dashboard {
+            opacity: 0;
+            transform: scale(0.85);
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: blur(10px);
+        }
+
+        body.content-ready .main-dashboard {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0px);
+        }
+
+        body.page-exit .main-dashboard {
+            opacity: 0;
+            transform: scale(0.9);
+            filter: blur(20px);
+            transition: opacity var(--page-transition-duration) var(--page-transition-timing), 
+                        transform var(--page-transition-duration) var(--page-transition-timing), 
+                        filter var(--page-transition-duration) var(--page-transition-timing);
+        }
+
+        /* ===== PAGE ENTRY/OPENING ANIMATION ===== */
+        body.page-enter .main-dashboard {
+            animation: pageOpen 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes pageOpen {
+            0% {
+                opacity: 0;
+                transform: scale(0.7) translateY(40px);
+                filter: blur(20px);
+            }
+            50% {
+                filter: blur(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0px);
+            }
+        }
+
+        .hub-container {
+            backdrop-filter: blur(25px) saturate(180%);
+            background: rgba(10, 15, 30, 0.65);
+            border: 1.5px solid rgba(164, 63, 255, 0.4);
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(164, 63, 255, 0.15);
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        .hub-container:hover {
+            border-color: rgba(164, 63, 255, 0.6);
+            box-shadow: 0 0 120px rgba(164, 63, 255, 0.25), inset 0 0 60px rgba(164, 63, 255, 0.2);
+        }
+
+        /* ===== HEADER TITLE ===== */
+
+        .cyber-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            background: linear-gradient(180deg, #fff 20%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            filter: drop-shadow(0 0 20px var(--primary-glow)) drop-shadow(0 0 40px rgba(164, 63, 255, 0.3));
+            transition: var(--transition-smooth);
+        }
+
+        /* ===== SUBTITLE ===== */
+
+        .operator-tag {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 4px 12px;
+            border-left: 3px solid var(--primary);
+            background: linear-gradient(90deg, rgba(164, 63, 255, 0.25), transparent);
+            transition: var(--transition-smooth);
+            text-shadow: 0 0 10px rgba(164, 63, 255, 0.5);
+        }
+
+        .operator-tag:hover {
+            color: #fff;
+            padding-left: 20px;
+            background: linear-gradient(90deg, rgba(164, 63, 255, 0.4), transparent);
+        }
+
+        /* ===== DEPARTMENT CARDS ===== */
+
+        .dept-card {
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            background: rgba(10, 15, 30, 0.75);
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 1.5rem 2.25rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .dept-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transform: translateX(-100%);
+            transition: 0.8s;
+        }
+
+        .dept-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .dept-card:hover {
+            transform: scale(1.03) translateX(10px);
+            border-color: #fff;
+            background: rgba(164, 63, 255, 0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(164, 63, 255, 0.3);
+            color: #fff !important;
+        }
+
+        .dept-icon {
+            font-size: 2rem;
+            margin-right: 1.5rem;
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+
+        /* Department Colors - Advanced Gradients - Increased Vibrancy */
+        .fib-card { color: #a5b4fc; border-left: 5px solid #818cf8; }
+        .lspd-card { color: #93c5fd; border-left: 5px solid #60a5fa; }
+        .sahp-card { color: #fdba74; border-left: 5px solid #fb923c; }
+        .gov-card { color: #c4b5fd; border-left: 5px solid #a78bfa; }
+        .ng-card { color: #86efac; border-left: 5px solid #4ade80; }
+        .badcops-card { color: #f9a8d4; border-left: 5px solid #f472b6; }
+        .penal-card { color: #fbbf24; border-left: 4px solid #fbbf24; }
+
+        /* ===== GRID LAYOUT ===== */
+
+        .dept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .dept-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* ===== ANIMATIONS ===== */
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        .stagger-6 { animation-delay: 0.6s; }
+        .stagger-7 { animation-delay: 0.7s; }
+
+        /* ===== RESPONSIVE ===== */
+
+        @media (max-width: 768px) {
+            body { overflow-y: auto; }
+            .hub-container { border-radius: 0; min-height: 100vh; }
+            .cyber-title { font-size: 2.5rem !important; }
+            .dept-grid { grid-template-columns: 1fr; }
+            .dept-card { padding: 1rem 1.5rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Advanced Loading Screen -->
+    <div class="loader-wrapper" id="loader">
+        <div class="loader-bg-fx"></div>
+        <div class="loader-content">
+            <div class="spinner-container">
+                <div class="spinner-ring ring-1"></div>
+                <div class="spinner-ring ring-2"></div>
+                <div class="spinner-ring ring-3"></div>
+                <div class="spinner-core"></div>
+            </div>
+            
+            <div class="loader-stats">
+                <span id="loader-status">CONNECTING...</span>
+                <span id="loader-percent">0%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="loader-text">INITIALIZING SYSTEM</div>
+            <div class="loader-subtext">LOS SANTOS HUB v2.4.0</div>
+        </div>
+    </div>
+
+    <!-- Dynamic Background (VANTA.NET) -->
+    <div id="your-element-selector"></div>
+
+    <!-- Overlays -->
+    <div class="dark-gradient"></div>
+    <div class="grid-overlay"></div>
+    <div class="tv-scanlines"></div>
+
+    <!-- Floating Particles -->
+    <div class="particles" id="particles-container"></div>
+
+    <!-- Page Transition Overlay -->
+    <div class="page-exit-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="min-h-screen flex items-center justify-center p-0 md:p-8 main-dashboard">
+        <div class="hub-container max-w-5xl w-full">
+
+            <!-- Header -->
+            <div class="pt-12 pb-10 px-10 fade-in-up">
+                <div class="operator-tag mb-4">
+                    //- Made By Ryan Cooper🛡️-\\
+                </div>
+                <h1 class="cyber-title text-5xl md:text-7xl" data-text="LOS SANTOS HUB">
+                    LOS SANTOS HUB
+                </h1>
+            </div>
+
+            <!-- Department Grid -->
+            <div class="dept-grid px-10 pb-12">
+
+                <a class='dept-card fib-card fade-in-up stagger-2' href='fibbyryan.html'>
+          <span class="dept-icon">🕵️</span>
+          <span>FIB Bodycam Commands</span>
+        </a>
+
+                <a class='dept-card lspd-card fade-in-up stagger-3' href='lspdbyryan.html'>
+          <span class="dept-icon">👮</span>
+          <span>LSPD Bodycam Commands</span>
+        </a>
+
+                <a class='dept-card sahp-card fade-in-up stagger-4' href='sahpbyryan.html'>
+          <span class="dept-icon">🚔</span>
+          <span>SAHP Bodycam Commands</span>
+        </a>
+
+                <a class='dept-card gov-card fade-in-up stagger-5' href='govbyryan.html'>
+          <span class="dept-icon">🏛️</span>
+          <span>GOV Bodycam Commands</span>
+        </a>
+
+                <a class='dept-card ng-card fade-in-up stagger-7' href='ngbyryan.html'>
+          <span class="dept-icon">🪖</span>
+          <span>NG Bodycam Commands</span>
+        </a>
+
+                <a class='dept-card badcops-card fade-in-up stagger-7' href='biobyryan.html' style='animation-delay: 0.75s;'>
+          <span class="dept-icon">💀</span>
+          <span>Bad Cops Commands</span>
+        </a>
+
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- VANTA Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js"></script>
+
+    <script>
+        // Handle page entry animation (triggered when navigating from another page)
+        window.addEventListener('pageshow', (e) => {
+            // Check if page was loaded via navigation (not first visit)
+            if (e.persisted || performance.getEntriesByType('navigation')[0]?.type !== 'navigate') {
+                document.body.classList.add('page-enter');
+            }
+        });
+
+        // Handle Loader with Progress Logic
+        window.addEventListener('DOMContentLoaded', () => {
+            const loader = document.getElementById('loader');
+            const progressBar = document.getElementById('progress-bar');
+            const percentText = document.getElementById('loader-percent');
+            const statusText = document.getElementById('loader-status');
+            
+            let progress = 0;
+            const statusMessages = [
+                'ESTABLISHING CONNECTION...',
+                'DECRYPTING DATA...',
+                'LOADING ASSETS...',
+                'OPTIMIZING UI...',
+                'SYNCING MODULES...',
+                'SYSTEM READY'
+            ];
+
+            const updateLoader = () => {
+                const step = Math.random() * 8;
+                progress = Math.min(progress + step, 100);
+                
+                progressBar.style.width = `${progress}%`;
+                percentText.textContent = `${Math.floor(progress)}%`;
+                
+                const statusIndex = Math.floor((progress / 100) * (statusMessages.length - 1));
+                statusText.textContent = statusMessages[statusIndex];
+
+                if (progress < 100) {
+                    requestAnimationFrame(() => setTimeout(updateLoader, 50 + Math.random() * 100));
+                } else {
+                    setTimeout(() => {
+                        loader.classList.add('fade-out');
+                        document.body.classList.add('content-ready');
+                        // Trigger opening animation for page entry
+                        document.body.classList.add('page-enter');
+                        // Unlock scroll or other interactions here
+                    }, 800);
+                }
+            };
+
+            updateLoader();
+        });
+
+        if (window.VANTA && window.VANTA.NET) {
+            window.VANTA.NET({
+                el: "#your-element-selector",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                color: 0xa43fff,
+                points: 20.00,
+                maxDistance: 22.00,
+                spacing: 14.00
+            });
+        }
+
+        // Generate floating particles (Purple and White)
+        const particlesContainer = document.getElementById('particles-container');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            const type = Math.random() > 0.6 ? 'white' : 'purple';
+            particle.className = `particle ${type}`;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Add hover sound effect (subtle)
+        const hoverSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        hoverSound.volume = 0.05;
+
+        // ===== ADVANCED PAGE TRANSITION HANDLER =====
+        const transitionDuration = 800; // Match CSS animation duration
+
+        /**
+         * Handle smooth page transitions for all navigation links
+         * Prevents default instant navigation and triggers exit animation
+         */
+        function handleLinkClick(e) {
+            const link = e.currentTarget;
+            const href = link.getAttribute('href');
+
+            // Only intercept external/new-page links (not hash/anchor links)
+            if (href && !href.startsWith('#')) {
+                e.preventDefault();
+
+                // Add visual feedback - trigger page exit animation
+                document.body.classList.add('page-exit');
+                
+                // Delay navigation to allow animation to complete
+                const navigationTimer = setTimeout(() => {
+                    window.location.href = href;
+                }, transitionDuration);
+
+                // Safety cleanup if user navigates away before timeout
+                link.addEventListener('click', () => clearTimeout(navigationTimer), { once: true });
+            }
+        }
+
+        // Apply page transition to department cards
+        document.querySelectorAll('.dept-card').forEach(card => {
+            // Hover sound effect
+            card.addEventListener('mouseenter', () => {
+                const soundClone = hoverSound.cloneNode();
+                soundClone.volume = 0.05;
+                soundClone.play().catch(() => {}); // Catch browser blocking autoplay
+            });
+
+            // Page transition handler
+            card.addEventListener('click', handleLinkClick);
+        });
+
+        // Apply page transition to ANY anchor tags (universal solution)
+        document.querySelectorAll('a[href]').forEach(link => {
+            // Skip internal/anchor links
+            if (!link.getAttribute('href').startsWith('#')) {
+                link.addEventListener('click', handleLinkClick);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

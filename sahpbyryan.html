@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SAHP Bodycam Commands — Los Santos Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #111;
+            color: #e6e6e6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #vanta-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .blur-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(8px);
+            z-index: -1;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* ===== BACKGROUND EFFECTS ===== */
+
+        .camo-overlay, .grid-overlay, .gradient-orbs {
+            display: none;
+        }
+
+        /* ===== BACK BUTTON ===== */
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(212, 160, 23, 0.1);
+            border: 2px solid rgba(212, 160, 23, 0.3);
+            color: #D4A017;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button:hover {
+            background: rgba(212, 160, 23, 0.2);
+            border-color: #D4A017;
+            transform: translateX(-5px);
+            box-shadow: 0 6px 25px rgba(212, 160, 23, 0.3);
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+        }
+
+        /* ===== HEADER ===== */
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .logo-wrapper {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .logo-wrapper img {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            border-radius: 15px;
+            filter: drop-shadow(0 0 20px rgba(212, 160, 23, 0.5));
+            animation: logo-pulse 3s ease-in-out infinite;
+            background: rgba(212, 160, 23, 0.1);
+            padding: 15px;
+        }
+
+        @keyframes logo-pulse {
+            0%,
+            100% {
+                filter: drop-shadow(0 0 20px rgba(212, 160, 23, 0.5));
+                transform: scale(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 30px rgba(212, 160, 23, 0.8));
+                transform: scale(1.05);
+            }
+        }
+
+        .logo-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -15px;
+            border: 2px solid rgba(212, 160, 23, 0.2);
+            border-radius: 20px;
+            animation: rotate-border 10s linear infinite;
+        }
+
+        @keyframes rotate-border {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            background: linear-gradient(180deg, #ffffff 0%, #E6B800 50%, #D4A017 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 25px rgba(212, 160, 23, 0.4));
+        }
+
+        .creator-tag {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            color: rgba(212, 160, 23, 0.8);
+            letter-spacing: 0.1em;
+            padding: 10px 20px;
+            border: 1px solid rgba(212, 160, 23, 0.2);
+            border-radius: 8px;
+            display: inline-block;
+            background: rgba(212, 160, 23, 0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        /* ===== SECTIONS ===== */
+
+        .section {
+            margin-bottom: 50px;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .section:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .section:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .section:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .section:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .section:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .section:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .section:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        .section:nth-child(8) {
+            animation-delay: 0.8s;
+        }
+
+        .section:nth-child(9) {
+            animation-delay: 0.9s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(212, 160, 23, 0.3);
+            position: relative;
+        }
+
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, #D4A017, transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0%,
+            100% {
+                transform: translateX(0);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateX(200px);
+                opacity: 1;
+            }
+        }
+
+        .section-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px rgba(212, 160, 23, 0.5));
+        }
+
+        .section h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #E6B800;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(212, 160, 23, 0.3);
+        }
+
+        /* ===== CARDS ===== */
+
+        .card {
+            background: linear-gradient(135deg, rgba(26, 31, 43, 0.4), rgba(20, 25, 40, 0.4));
+            backdrop-filter: blur(25px);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 35px;
+            border: 1px solid rgba(212, 160, 23, 0.3);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 160, 23, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            border-color: rgba(212, 160, 23, 0.6);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(212, 160, 23, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #ffc400;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .card h3::before {
+            content: '▸';
+            color: #D4A017;
+            font-size: 1.8rem;
+        }
+
+        .card p {
+            color: #ffffff;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            padding: 15px 20px;
+            background: rgba(212, 160, 23, 0.15);
+            border-left: 4px solid #D4A017;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* ===== COMMAND LINES ===== */
+
+        .command-line {
+            background: linear-gradient(135deg, rgba(16, 20, 28, 0.7), rgba(10, 14, 20, 0.7));
+            backdrop-filter: blur(15px);
+            border-left: 5px solid #B58900;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .command-line::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: linear-gradient(180deg, #E6B800, #B58900);
+            box-shadow: 0 0 15px rgba(212, 160, 23, 0.6);
+        }
+
+        .command-line:hover {
+            background: linear-gradient(135deg, rgba(25, 30, 45, 0.95), rgba(20, 24, 35, 0.95));
+            border-left-color: #ffc400;
+            transform: translateX(8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), -8px 0 25px rgba(212, 160, 23, 0.3);
+        }
+
+        .command-text {
+            flex: 1;
+            color: #ffffff;
+            line-height: 1.6;
+            user-select: all;
+            font-weight: 500;
+        }
+
+        /* ===== COPY BUTTON ===== */
+
+        .copy-btn {
+            background: linear-gradient(135deg, #D4A017, #B58900);
+            border: none;
+            color: white;
+            padding: 15px 35px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            box-shadow: 0 6px 20px rgba(165, 124, 0, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            text-transform: uppercase;
+        }
+
+        .copy-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #ffc400, #D4A017);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(212, 160, 23, 0.6);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 4px 15px rgba(212, 160, 23, 0.4);
+        }
+
+        .copy-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .copy-btn.copied {
+            background: linear-gradient(135deg, #E6B800, #D4A017);
+            box-shadow: 0 4px 15px rgba(230, 184, 0, 0.4);
+        }
+
+        /* ===== RESPONSIVE ===== */
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 80px 15px 40px;
+            }
+            header h1 {
+                font-size: 2.5rem;
+            }
+            .section h2 {
+                font-size: 1.5rem;
+            }
+            .command-line {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .copy-btn {
+                width: 100%;
+            }
+            .back-button {
+                top: 15px;
+                left: 15px;
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+            .logo-wrapper img {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 14, 26, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #B58900, #A67C00);
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(212, 160, 23, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #D4A017, #B58900);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Vanta Background -->
+    <div id="vanta-bg"></div>
+    <div class="blur-overlay"></div>
+
+    <!-- Background Effects -->
+    <div class="camo-overlay"></div>
+    <div class="grid-overlay"></div>
+    <div class="gradient-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Back Button -->
+    <a href="index.html" class="back-button">
+    <span>←</span>
+    <span>BACK TO HUB</span>
+  </a>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- Header -->
+        <header>
+            <div class="logo-wrapper">
+                <img src="https://clipground.com/images/sahp-logo-5.png" alt="SAHP Logo" onerror="this.src='https://via.placeholder.com/140/D4A017/ffffff?text=SAHP'">
+            </div>
+            <h1>SAHP BODYCAM COMMANDS</h1>
+            <div class="creator-tag">
+                //- Made By Ryan Cooper🛡️-\\
+            </div>
+        </header>
+
+        <!-- Section: Attaching Bodycam -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📹</span>
+                <h2>Attaching Bodycam</h2>
+            </div>
+
+            <div class="card">
+                <h3>In Uniform</h3>
+                <div class="command-line">
+                    <span class="command-text">/me Takes out bodycam, attaches it to chest, checks its ballistic and waterproof</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me ensures it is recording and checks for the red light</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/do It is recording, is ballistic and waterproof</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me connects the PDA to the nearby SAHP cell tower and cloud servers</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>While Undercover</h3>
+                <div class="command-line">
+                    <span class="command-text">/me takes out bodycam and attaches it to belt, hides it, checks its ballistic and waterproof</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me makes sure it is recording and checks for the red light</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/do It is recording, is ballistic and waterproof</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me connects PDA to the nearest cell tower</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Refreshing Bodycam -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🔄</span>
+                <h2>Refreshing Bodycam</h2>
+            </div>
+
+            <div class="card">
+                <h3>Refreshing Bodycam</h3>
+                <div class="command-line">
+                    <span class="command-text">/me refreshing bodycam</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/do It is recording</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <p>⚡💀 First, turn on the bodycam (or screen recording software), then type the command while making sure you are clearly visible in the recording as you do it.</p>
+            </div>
+        </div>
+
+        <!-- Section: Saving Bodycam -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">💾</span>
+                <h2>Saving Bodycam</h2>
+            </div>
+
+            <div class="card">
+                <h3>Saving Bodycam</h3>
+                <div class="command-line">
+                    <span class="command-text">/me saves bodycam footage, uploads it to SAHP servers, and continues recording</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/do It is recording</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Jumpsuit Commands -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🤵</span>
+                <h2>Jumpsuit Commands</h2>
+            </div>
+
+            <div class="card">
+                <h3>Taking Jumpsuit</h3>
+                <div class="command-line">
+                    <span class="command-text">/me takes the XYZ Size Jumpsuit From the Bench</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <p>💀➡️ Don't Forget to Swap XYZ With the actual Size of Jumpsuit Requested by 10-15</p>
+
+                <h3>Placing On Bed</h3>
+                <div class="command-line">
+                    <span class="command-text">/me Places the Jumpsuit on the Bed</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Drone Commands -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">✈️</span>
+                <h2>Drone Commands</h2>
+            </div>
+
+            <div class="card">
+                <h3>While in Work Uniform</h3>
+                <div class="command-line">
+                    <span class="command-text">/me launches the SAHP Drone</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+
+                <h3>While Undercover</h3>
+                <div class="command-line">
+                    <span class="command-text">/me takes the SAHP drone from the trunk and puts it in the backpack</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me takes the SAHP drone from the backpack and launches it</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me takes the SAHP drone from the ground and puts it in the backpack</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Breaking Trunk -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🚗</span>
+                <h2>Breaking Trunk of Vehicle</h2>
+            </div>
+
+            <div class="card">
+                <h3>Breaking the Trunk</h3>
+                <div class="command-line">
+                    <span class="command-text">/me Break the trunk wide open using a crowbar</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me writes down license plate and searches the license plate through the SAHP database</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me Kneels down, feels the VIN number under the car and run it through SAHP Database</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Handing Footage -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">⚖️</span>
+                <h2>Handing Footage to the Lawyer</h2>
+            </div>
+
+            <div class="card">
+                <h3>Handing Footage to the Lawyer</h3>
+                <div class="command-line">
+                    <span class="command-text">/me saves bodycam footage onto an SD card and uploads to SAHP servers</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me removes SD card from bodycam and hands it to the lawyer</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Finishing Shift -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🏁</span>
+                <h2>Finishing Your Shift</h2>
+            </div>
+
+            <div class="card">
+                <h3>Finishing Your Shift</h3>
+                <div class="command-line">
+                    <span class="command-text">/me saves bodycam footage onto an SD card and uploads to SAHP servers</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">/me stores badge and equipment in the locker</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Department Messages -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📡</span>
+                <h2>Department Messages</h2>
+            </div>
+
+            <!-- SAHP to DOJ -->
+            <div class="card">
+                <h3>⚖️ SAHP to DOJ</h3>
+                <div class="command-line">
+                    <span class="command-text">SAHP to DOJ: How copy?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to DOJ: Good copy, send traffic!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to DOJ: Bad copy!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to DOJ: Bad copy, we're currently in a pursuit!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to DOJ: We have a 10-15 at DOC requesting a lawyer, are any available?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to DOJ: 10-4, much appreciated!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <!-- SAHP to LSPD -->
+            <div class="card">
+                <h3>👮 SAHP to LSPD</h3>
+                <div class="command-line">
+                    <span class="command-text">SAHP to LSPD: How copy?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to LSPD: Good copy, send traffic!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to LSPD: Bad copy!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to LSPD: Bad copy, we're currently in a pursuit!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to LSPD: Requesting backup for a high-speed chase in your jurisdiction.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to LSPD: 10-4, much appreciated!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <!-- SAHP to FIB -->
+            <div class="card">
+                <h3>🎯 SAHP to FIB</h3>
+                <div class="command-line">
+                    <span class="command-text">SAHP to FIB: How copy?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to FIB: Good copy, send traffic!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to FIB: Bad copy!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to FIB: Bad copy, we're currently in a pursuit!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to FIB: Requesting assistance for a multi-vehicle collision investigation.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to FIB: 10-4, much appreciated!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <!-- SAHP to EMS -->
+            <div class="card">
+                <h3>🚑 SAHP to EMS</h3>
+                <div class="command-line">
+                    <span class="command-text">SAHP to EMS: How copy?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to EMS: Good copy, send traffic!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to EMS: Bad copy!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to EMS: Bad copy, we're currently managing a crash site!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to EMS: Requesting immediate medical assistance at highway collision.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to EMS: 10-4, much appreciated!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <!-- SAHP to Government -->
+            <div class="card">
+                <h3>🏛️ SAHP to Government</h3>
+                <div class="command-line">
+                    <span class="command-text">SAHP to GOV: How copy?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to GOV: Good copy, send traffic!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to GOV: Bad copy!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to GOV: Bad copy, we're currently in a pursuit!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to GOV: Troopers enroute!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to GOV: Can we have a quick meeting at capitol?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to GOV: Requesting permission to land on your lawn.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to GOV: We have one of your units in custody, could you 10-17 to DOC?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to GOV: 10-4, much appreciated!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+
+            <!-- SAHP to GLOBAL -->
+            <div class="card">
+                <h3>🚨 SAHP to GLOBAL</h3>
+                <div class="command-line">
+                    <span class="command-text">SAHP to GLOBAL: What's the situation?</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to ALL: Global is for regrouping after the latest store robbery. Please dispatch max units</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to ALL: Global is for a high-speed pursuit, send all available units!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to ALL: Major collision on the highway, send all available units!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to ALL: Global is for a sobriety checkpoint, everyone is invited!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to ALL: Be on standby for a possible roadblock situation!</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+                <div class="command-line">
+                    <span class="command-text">SAHP to ALL: The Global is 10-99.</span>
+                    <button class="copy-btn" onclick="copyLine(this)">COPY</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0xf5a623,
+            points: 20.00,
+            maxDistance: 22.00,
+            spacing: 14.00,
+            backgroundColor: 0x111111
+        })
+
+        // Copy function with visual feedback
+        function copyLine(button) {
+            const commandText = button.previousElementSibling.innerText;
+
+            navigator.clipboard.writeText(commandText).then(() => {
+                const originalText = button.innerText;
+                button.innerText = "✓ COPIED!";
+                button.classList.add('copied');
+
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.classList.remove('copied');
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                button.innerText = "ERROR";
+                setTimeout(() => {
+                    button.innerText = "COPY";
+                }, 1500);
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                window.location.href = '/';
+            }
+        });
+    </script>
+
+</body>
+
+</html>
